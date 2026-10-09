@@ -1,0 +1,4 @@
+Topic_ID,Topic_Name,IP_Count,IP_Total,IP_Percentage,VR_Count,VR_Total,VR_Percentage,Percentage_Difference_VR_minus_IP,Core_Keywords
+0,Emotions,39,59,66.1,54,86,62.79,-3.31,"interviews, evaluators, body language, performance, judge"
+1,Thoughts,20,59,33.9,32,86,37.21,3.31,"interview, nervousness, body language, interviewers, nervous"
+2,Bodily Sensations,0,59,0.0,0,86,0.0,0.0,N/A

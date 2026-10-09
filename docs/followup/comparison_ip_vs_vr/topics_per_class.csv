@@ -1,0 +1,46 @@
+Topic,Words,Frequency,Class
+-1,"did, evaluators, job, expressions, dream",13,IP
+0,"environment, described, thoughts ones, lab, wondering",3,IP
+1,"left lab, embarrassed, lab yesterday, body, lab",1,IP
+2,"changed, answer, gave, reactions, yesterday",3,IP
+3,"reactions, reactions evaluators, experiment, luck, timer",2,IP
+4,"good, interesting, career, good exercise, im curious",1,IP
+6,"interviews, nervousness, moment, vr, ive",1,IP
+7,"happened, intended, poorly, throw, response",2,IP
+8,"experiment, mistakes, setup, anxious, im",2,IP
+9,"lab, leaving lab, leaving, good exercise, thats",3,IP
+10,"wasnt, sentences, pausing, idea, make",3,IP
+11,"differently, compared, look, face, person",1,IP
+12,"evaluator, middle, beginning, head, work",3,IP
+13,"ability, guy, men, wish, instead",4,IP
+14,"smile, articulate, curious, main, facial expressions",4,IP
+15,"public, skills, improve, honestly, yesterday",1,IP
+16,"thoughts, additional, thoughts ones, couple, ones",3,IP
+17,"reactions, reflected, neutral, good, did dwell",3,IP
+18,"impressions, given, pay, pay attention, life",3,IP
+19,"busy, did spend, spend, did, ",1,IP
+20,"skills, confident, conscious, fine, stressful",1,IP
+22,"focused evaluators, initially, laughing, evaluators reactions, focused",1,IP
+-1,"job, positive, evaluators, dream, did",20,VR
+0,"yesterday ive, differently, simple, running, question",6,VR
+1,"prepared, interview, job, dream job, dream",8,VR
+2,"memory, positive, losing, evaluator positive, processing",3,VR
+3,"reactions, experiment, realised, reactions evaluators, making",4,VR
+4,"interesting, career, good exercise, im curious, motivated",4,VR
+5,"minutes, worried, test, quite, difficult",5,VR
+6,"vr, examiners, actual, room, study",4,VR
+7,"fake, fake people, relieved, matter, surprised",3,VR
+8,"minute, confused, left, test, emotions",3,VR
+9,"lab, finished, havent leaving, leaving lab, leaving",2,VR
+10,"need improve, make, train, replaying, lost",2,VR
+11,"ai, random, points, id, realized",4,VR
+12,"laughing, stay, head, best, laughing evaluators",2,VR
+15,"public, skills, improve, positive challenge, challenged",3,VR
+16,"thoughts, additional, thoughts ones, couple, ones",1,VR
+17,"reflected, poor, extremely, evaluators reacted, including",1,VR
+18,"job interviews, perform, consequences, real life, life",1,VR
+19,"did spend, spend, busy, did, ",2,VR
+20,"confident, conscious, fine, stressful, embarrassed",2,VR
+21,"judge, judges, quickly, support, words",3,VR
+22,"friendly, read, evaluators faces, left evaluators, parts",1,VR
+23,"negatively, performance, im, doesnt, best",2,VR

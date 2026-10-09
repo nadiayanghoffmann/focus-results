@@ -1,0 +1,4 @@
+Topic_ID,Topic_Name,IP_Count,IP_Total,IP_Percentage,VR_Count,VR_Total,VR_Percentage,Percentage_Difference_VR_minus_IP,Core_Keywords
+0,Emotions,54,62,87.1,58,89,65.17,-21.93,"nervousness, nervous, anxious, confidence, distracted"
+1,Thoughts,7,62,11.29,25,89,28.09,16.8,"interviews, job interviews, nervous, interested nervous, confident"
+2,Bodily Sensations,1,62,1.61,6,89,6.74,5.13,"nervous, anxious, nervous beginning, anxious beginning, focus doing"

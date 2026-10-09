@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOCUS Study: Topic Modelling & Longitudinal Analysis Portal</title>
+  <meta name="description" content="Research portal and visualization dashboard for the FOCUS study: BERTopic qualitative topic modelling, In-Person vs Virtual Reality conditions, and one-to-one longitudinal reflection analysis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #080c14;
+      --bg-surface: #0f172a;
+      --bg-card: rgba(17, 26, 46, 0.82);
+      --bg-card-hover: rgba(23, 37, 65, 0.95);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(56, 189, 248, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-orange: #fb923c;
+      --accent-green: #34d399;
+      --accent-purple: #c084fc;
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+      --shadow-glow: 0 0 25px rgba(56, 189, 248, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.09) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(251, 146, 60, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 85%, rgba(192, 132, 252, 0.06) 0%, transparent 50%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    .container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Top Navigation / Brand */
+    nav.top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #38bdf8, #fb923c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      color: #080c14;
+      font-size: 18px;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-left: 8px;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 30px 0 50px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 30px;
+      color: var(--accent-cyan);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      background: linear-gradient(180deg, #ffffff 40%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p.lead {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 34px;
+    }
+
+    /* KPI Highlights */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 45px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px 22px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-card);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--kpi-accent, var(--accent-cyan));
+    }
+
+    .kpi-val {
+      font-size: 32px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .kpi-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* Controls: Search & Tabs */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 16px 20px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 36px;
+      position: sticky;
+      top: 16px;
+      z-index: 10;
+      box-shadow: var(--shadow-card);
+    }
+
+    .tab-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .tab-pill.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: var(--accent-cyan);
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      background: #080c14;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 14px;
+      min-width: 270px;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap:focus-within {
+      border-color: var(--accent-cyan);
+    }
+
+    .search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 13.5px;
+      width: 100%;
+      margin-left: 8px;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin: 50px 0 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .count-tag {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+    }
+
+    /* Visual Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(410px, 1fr));
+      gap: 22px;
+    }
+
+    @media (max-width: 640px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 32px;
+      }
+    }
+
+    /* Visualization Card */
+    .viz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      position: relative;
+    }
+
+    .viz-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), var(--shadow-glow);
+    }
+
+    .viz-preview-wrap {
+      width: 100%;
+      height: 220px;
+      background: #090d16;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .viz-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 0.35s ease, opacity 0.3s ease;
+      opacity: 0.9;
+    }
+
+    .viz-card:hover .viz-preview-wrap img {
+      transform: scale(1.03);
+      opacity: 1;
+    }
+
+    .card-badge-strip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge-paired { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.5); }
+    .badge-cross { background: rgba(251, 146, 60, 0.2); color: var(--accent-orange); border: 1px solid rgba(251, 146, 60, 0.5); }
+    .badge-lab { background: rgba(192, 132, 252, 0.2); color: var(--accent-purple); border: 1px solid rgba(192, 132, 252, 0.5); }
+    .badge-followup { background: rgba(52, 211, 153, 0.2); color: var(--accent-green); border: 1px solid rgba(52, 211, 153, 0.5); }
+    .badge-app { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.5); }
+
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Flagship Banner Card */
+    .flagship-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 20px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 32px;
+      align-items: center;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.12);
+      margin-bottom: 25px;
+    }
+
+    @media (max-width: 900px) {
+      .flagship-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .flagship-content h3 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .flagship-content p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .flagship-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .flagship-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #e2e8f0;
+    }
+
+    .flagship-feature svg {
+      color: var(--accent-cyan);
+      flex-shrink: 0;
+    }
+
+    .flagship-preview {
+      background: #080c14;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      height: 260px;
+      position: relative;
+    }
+
+    .flagship-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.92;
+    }
+
+    /* Data Hub Table */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    table.data-table th {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 14px 20px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    table.data-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+    }
+
+    table.data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .csv-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12.5px;
+      padding: 4px 10px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .csv-link:hover {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Modal / Lightbox */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-window {
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      width: 95vw;
+      max-width: 1300px;
+      height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      background: #090d16;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .modal-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .modal-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .modal-body {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    .modal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Top Navigation -->
+    <nav class="top-bar">
+      <div class="brand">
+        <div class="brand-logo">F</div>
+        <div class="brand-name">FOCUS Study</div>
+        <div class="brand-sub">Topic Modelling &amp; Analytics Portal</div>
+      </div>
+      <div class="nav-links">
+        <a href="#suite-paired" class="nav-btn">Paired Longitudinal</a>
+        <a href="#suite-lab" class="nav-btn">Immediate Lab</a>
+        <a href="#suite-followup" class="nav-btn">Next-Day Follow-Up</a>
+        <a href="#suite-data" class="nav-btn">Data Hub</a>
+      </div>
+    </nav>
+
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        BERTopic &bull; Qualitative NLP &bull; Mixed Methods
+      </div>
+      <h1>Qualitative Themes &amp; Longitudinal Language Trends</h1>
+      <p class="lead">
+        Comprehensive interactive analysis of free-response reflections from the FOCUS study, investigating evaluator condition dynamics (In-Person vs Virtual Reality) and one-to-one participant longitudinal shifts across 24 hours.
+      </p>
+    </header>
+
+    <!-- Key Study Metrics -->
+    <section class="kpi-row" aria-label="Study Metrics Overview">
+      <div class="kpi-card" style="--kpi-accent: #38bdf8;">
+        <div class="kpi-val">151</div>
+        <div class="kpi-label">Study Participants</div>
+        <div class="kpi-sub">62 In-Person (IP) &bull; 89 Virtual Reality (VR)</div>
+      </div>
+      <div class="kpi-card" style="--kpi-accent: #fb923c;">
+        <div class="kpi-val">145</div>
+        <div class="kpi-label">Paired Responses</div>
+        <div class="kpi-sub">Complete Lab + Follow-up 1-to-1 pairs</div>
+      </div>
+      <div class="kpi-card" style="--kpi-accent: #34d399;">
+        <div class="kpi-val">14.5%</div>
+        <div class="kpi-label">Topic Retention Rate</div>
+        <div class="kpi-sub">85.5% transitioned into new themes next-day</div>
+      </div>
+      <div class="kpi-card" style="--kpi-accent: #c084fc;">
+        <div class="kpi-val">0.475</div>
+        <div class="kpi-label">Mean SBERT Cosine</div>
+        <div class="kpi-sub">Semantic consistency between time points</div>
+      </div>
+      <div class="kpi-card" style="--kpi-accent: #fb7185;">
+        <div class="kpi-val">+8.2 / -10.7</div>
+        <div class="kpi-label">Word Count Shift</div>
+        <div class="kpi-sub">IP elaborated (+8.2w) &bull; VR condensed (-10.7w)</div>
+      </div>
+    </section>
+
+    <!-- Interactive Navigation Filter Bar -->
+    <div class="filter-bar">
+      <div class="tab-pills" role="tablist">
+        <button class="tab-pill active" onclick="filterCategory('all', this)">All Dashboards (28)</button>
+        <button class="tab-pill" onclick="filterCategory('paired', this)">Paired Longitudinal (6)</button>
+        <button class="tab-pill" onclick="filterCategory('cross', this)">Cross-Arm IP vs VR (4)</button>
+        <button class="tab-pill" onclick="filterCategory('lab', this)">Immediate Lab (11)</button>
+        <button class="tab-pill" onclick="filterCategory('followup', this)">Next-Day Follow-Up (11)</button>
+      </div>
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchViz" class="search-input" placeholder="Search pages, charts, topics..." oninput="handleSearch()">
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 1: PAIRED LONGITUDINAL COMPARISON (FLAGSHIP)                   -->
+    <!-- ===================================================================== -->
+    <div class="section-group" data-suite="paired">
+      <div class="section-header" id="suite-paired">
+        <div>
+          <h2 class="section-title">
+            <span style="color: var(--accent-cyan);">&bull;</span> One-to-One Longitudinal Analysis (Lab &rarr; Follow-up)
+          </h2>
+          <p class="section-desc">Comparing immediate in-lab reflection text vs next-day follow-up text for each individual participant (N = 145 paired)</p>
+        </div>
+        <span class="count-tag">6 Interactive Visualizations</span>
+      </div>
+
+      <!-- Flagship Interactive Explorer Banner Card -->
+      <div class="flagship-card" data-tags="paired explorer side-by-side search filter participants">
+        <div class="flagship-content">
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <span class="badge badge-app">Interactive Tool</span>
+            <span class="badge badge-paired">N = 145 Participants</span>
+          </div>
+          <h3>Participant-by-Participant Reflection Explorer</h3>
+          <p>
+            An interactive dashboard displaying each participant's immediate lab response and next-day follow-up response side-by-side. Search by participant ID, filter by condition (IP vs VR), sort by semantic cosine drift, and inspect thematic keyword trajectories.
+          </p>
+          <div class="flagship-features">
+            <div class="flagship-feature">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Side-by-side text comparison</span>
+            </div>
+            <div class="flagship-feature">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Cosine similarity &amp; length delta</span>
+            </div>
+            <div class="flagship-feature">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Instant ID &amp; keyword searching</span>
+            </div>
+            <div class="flagship-feature">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Condition badge filtering (IP / VR)</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <a href="paired_comparison/participant_paired_explorer.html" target="_blank" class="btn btn-primary" style="font-size: 14px; padding: 10px 20px;">
+              Launch Full Explorer &nearr;
+            </a>
+            <button onclick="openModal('paired_comparison/participant_paired_explorer.html', 'Participant-by-Participant Reflection Explorer')" class="btn btn-secondary">
+              Preview Here
+            </button>
+          </div>
+        </div>
+        <div class="flagship-preview">
+          <img src="paired_comparison/topic_transition_sankey.png" alt="Participant Explorer Preview">
+        </div>
+      </div>
+
+      <!-- Paired Grid Cards -->
+      <div class="cards-grid">
+        <!-- Sankey Flow -->
+        <div class="viz-card" data-category="paired" data-tags="sankey flow alluvial transition trajectories topics migration">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-paired">Paired</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Sankey Flow</span>
+            </div>
+            <img src="paired_comparison/topic_transition_sankey.png" alt="Topic Transition Sankey" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Longitudinal Topic Migration Sankey</h3>
+            <p class="card-desc">Interactive alluvial flow diagram visualizing how participants migrate from their immediate Lab topic to their Next-Day Follow-Up topic (85.5% topic migration rate).</p>
+            <div class="card-actions">
+              <a href="paired_comparison/topic_transition_sankey.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('paired_comparison/topic_transition_sankey.html', 'Longitudinal Topic Migration Sankey')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Semantic Similarity Distribution -->
+        <div class="viz-card" data-category="paired cross" data-tags="semantic similarity consistency cosine sbert distribution boxplot ip vr statistics hypothesis test">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-paired">Paired</span>
+              <span class="badge badge-cross">IP vs VR</span>
+            </div>
+            <img src="paired_comparison/semantic_similarity_distribution.png" alt="Semantic Similarity Distribution" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Semantic Consistency (IP vs VR)</h3>
+            <p class="card-desc">Box and jitter plot comparing Sentence-BERT cosine similarity between Lab and Follow-up reflections across conditions, complete with Welch's t-test and Mann-Whitney U test statistics.</p>
+            <div class="card-actions">
+              <a href="paired_comparison/semantic_similarity_distribution.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('paired_comparison/semantic_similarity_distribution.html', 'Semantic Consistency Distribution')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Topic Transition Heatmap -->
+        <div class="viz-card" data-category="paired" data-tags="heatmap transition matrix crosstab migration probability">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-paired">Paired</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Heatmap</span>
+            </div>
+            <img src="paired_comparison/topic_transition_heatmap.png" alt="Topic Transition Heatmap" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Topic Transition Probability Matrix</h3>
+            <p class="card-desc">Crosstab matrix displaying the exact participant volume moving from each Lab topic row to each Next-Day Follow-Up topic column.</p>
+            <div class="card-actions">
+              <a href="paired_comparison/topic_transition_heatmap.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('paired_comparison/topic_transition_heatmap.html', 'Topic Transition Heatmap')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Psycholinguistic Shifts Delta -->
+        <div class="viz-card" data-category="paired cross" data-tags="linguistic psycholinguistic delta shifts somatic evaluator rumination self barchart">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-paired">Paired</span>
+              <span class="badge badge-cross">Linguistic Δ</span>
+            </div>
+            <img src="paired_comparison/linguistic_trends_delta.png" alt="Linguistic Trends Delta" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Psycholinguistic Shifts (&Delta; Followup &minus; Lab)</h3>
+            <p class="card-desc">Grouped bar chart tracking 24-hour changes across somatic/bodily mentions, evaluator scrutiny, first-person self-focus, and evaluative counterfactual rumination.</p>
+            <div class="card-actions">
+              <a href="paired_comparison/linguistic_trends_delta.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('paired_comparison/linguistic_trends_delta.html', 'Psycholinguistic Shifts Delta')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vocabulary Drift -->
+        <div class="viz-card" data-category="paired" data-tags="vocabulary drift receding emerging terms rate barchart language change">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-paired">Paired</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Vocabulary Drift</span>
+            </div>
+            <img src="paired_comparison/vocabulary_drift_barchart.png" alt="Vocabulary Drift Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Vocabulary Drift: Receding vs Emerging Words</h3>
+            <p class="card-desc">Diverging frequency rate comparison (per 1,000 words) contrasting acute bodily tension words that faded (nervous, heart, eye contact) against reflective evaluation words that emerged (performance, better, wondering).</p>
+            <div class="card-actions">
+              <a href="paired_comparison/vocabulary_drift_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('paired_comparison/vocabulary_drift_barchart.html', 'Vocabulary Drift Barchart')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 2: IMMEDIATE LAB REFLECTION ANALYSES                          -->
+    <!-- ===================================================================== -->
+    <div class="section-group" data-suite="lab">
+      <div class="section-header" id="suite-lab">
+        <div>
+          <h2 class="section-title">
+            <span style="color: var(--accent-purple);">&bull;</span> Immediate Lab Reflection Analyses
+          </h2>
+          <p class="section-desc">Prompt: "Please describe your experience during and immediately after the speech task — including any thoughts, feelings, or bodily sensations you noticed." (N = 151)</p>
+        </div>
+        <span class="count-tag">11 Interactive Visualizations</span>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Lab Topics per Class Overview -->
+        <div class="viz-card" data-category="lab cross" data-tags="lab topics-per-class ip vr overview comparison barchart contrast">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge badge-cross">IP vs VR</span>
+            </div>
+            <img src="lab/comparison_ip_vs_vr/topics_per_class_overview.png" alt="Lab Topics per Class Overview" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lab Topics Overview (IP vs VR)</h3>
+            <p class="card-desc">Unified side-by-side grouped bar chart comparing all non-outlier qualitative topics between In-Person and Virtual Reality evaluators immediately post-task.</p>
+            <div class="card-actions">
+              <a href="lab/comparison_ip_vs_vr/topics_per_class_overview.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/comparison_ip_vs_vr/topics_per_class_overview.html', 'Lab Topics Overview (IP vs VR)')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab Topics per Class Drill-down -->
+        <div class="viz-card" data-category="lab cross" data-tags="lab topics-per-class drilldown c-tfidf keywords">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge badge-cross">c-TF-IDF</span>
+            </div>
+            <img src="lab/comparison_ip_vs_vr/topics_per_class_barchart.png" alt="Lab Topics per Class Drill-down" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lab Topics-per-Class Keyword Scores</h3>
+            <p class="card-desc">Interactive c-TF-IDF keyword distribution per class showing how vocabulary emphasis differs across conditions within each latent theme.</p>
+            <div class="card-actions">
+              <a href="lab/comparison_ip_vs_vr/topics_per_class_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/comparison_ip_vs_vr/topics_per_class_barchart.html', 'Lab Topics per Class Drill-down')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab Combined Topics Barchart -->
+        <div class="viz-card" data-category="lab" data-tags="lab combined topic barchart keywords descriptors">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Combined Cohort</span>
+            </div>
+            <img src="lab/combined/topic_barchart.png" alt="Lab Combined Topic Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lab Combined Topic Keywords</h3>
+            <p class="card-desc">Horizontal bar charts of top c-TF-IDF keyword representations for all topics discovered across the full immediate reflection cohort.</p>
+            <div class="card-actions">
+              <a href="lab/combined/topic_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/combined/topic_barchart.html', 'Lab Combined Topic Keywords')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab Combined Intertopic Distance Map -->
+        <div class="viz-card" data-category="lab" data-tags="lab combined distance map umap projection semantic clusters">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Distance Map</span>
+            </div>
+            <img src="lab/combined/topic_distance_map.png" alt="Lab Combined Distance Map" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lab Intertopic Distance Map</h3>
+            <p class="card-desc">2D manifold projection illustrating inter-cluster semantic distances, cluster sizes, and proximity between immediate lab themes.</p>
+            <div class="card-actions">
+              <a href="lab/combined/topic_distance_map.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/combined/topic_distance_map.html', 'Lab Intertopic Distance Map')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab Combined Topic Heatmap -->
+        <div class="viz-card" data-category="lab" data-tags="lab combined similarity heatmap cosine matrix">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Heatmap</span>
+            </div>
+            <img src="lab/combined/topic_heatmap.png" alt="Lab Combined Topic Heatmap" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Lab Topic Similarity Heatmap</h3>
+            <p class="card-desc">Pairwise cosine similarity matrix displaying the conceptual overlap and distinction across all immediate lab topics.</p>
+            <div class="card-actions">
+              <a href="lab/combined/topic_heatmap.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/combined/topic_heatmap.html', 'Lab Topic Similarity Heatmap')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab In-Person Specific Model -->
+        <div class="viz-card" data-category="lab" data-tags="lab ip in-person model barchart human evaluators">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan);">IP Arm Only</span>
+            </div>
+            <img src="lab/IP/topic_barchart.png" alt="Lab In-Person Topic Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">In-Person (IP) Arm Topic Model</h3>
+            <p class="card-desc">Dedicated topic model isolating reflections from participants facing live human evaluators in the physical room.</p>
+            <div class="card-actions">
+              <a href="lab/IP/topic_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/IP/topic_barchart.html', 'In-Person (IP) Arm Topic Model')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab VR Specific Model -->
+        <div class="viz-card" data-category="lab" data-tags="lab vr virtual reality model barchart avatars headset">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-lab">Immediate Lab</span>
+              <span class="badge" style="background: rgba(251, 146, 60, 0.2); color: var(--accent-orange);">VR Arm Only</span>
+            </div>
+            <img src="lab/VR/topic_barchart.png" alt="Lab VR Topic Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Virtual Reality (VR) Arm Topic Model</h3>
+            <p class="card-desc">Dedicated topic model isolating reflections from participants evaluated by simulated avatars inside a VR headset.</p>
+            <div class="card-actions">
+              <a href="lab/VR/topic_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('lab/VR/topic_barchart.html', 'Virtual Reality (VR) Arm Topic Model')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 3: NEXT-DAY FOLLOW-UP REFLECTION ANALYSES                     -->
+    <!-- ===================================================================== -->
+    <div class="section-group" data-suite="followup">
+      <div class="section-header" id="suite-followup">
+        <div>
+          <h2 class="section-title">
+            <span style="color: var(--accent-green);">&bull;</span> Next-Day Follow-Up Reflection Analyses
+          </h2>
+          <p class="section-desc">Prompt: "Since leaving the lab yesterday, please describe any thoughts, feelings, or memories related to the speech task that have come to mind." (N = 145)</p>
+        </div>
+        <span class="count-tag">11 Interactive Visualizations</span>
+      </div>
+
+      <div class="cards-grid">
+        <!-- Follow-up Topics per Class Overview -->
+        <div class="viz-card" data-category="followup cross" data-tags="followup topics-per-class ip vr overview comparison barchart next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge badge-cross">IP vs VR</span>
+            </div>
+            <img src="followup/comparison_ip_vs_vr/topics_per_class_overview.png" alt="Follow-up Topics per Class Overview" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up Topics Overview (IP vs VR)</h3>
+            <p class="card-desc">Side-by-side grouped bar chart comparing retrospective next-day themes between In-Person and Virtual Reality cohorts.</p>
+            <div class="card-actions">
+              <a href="followup/comparison_ip_vs_vr/topics_per_class_overview.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/comparison_ip_vs_vr/topics_per_class_overview.html', 'Follow-up Topics Overview (IP vs VR)')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up Topics per Class Drill-down -->
+        <div class="viz-card" data-category="followup cross" data-tags="followup topics-per-class drilldown c-tfidf keywords next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge badge-cross">c-TF-IDF</span>
+            </div>
+            <img src="followup/comparison_ip_vs_vr/topics_per_class_barchart.png" alt="Follow-up Topics per Class Drill-down" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up Topics-per-Class Keyword Scores</h3>
+            <p class="card-desc">Interactive keyword ranking showing how each next-day topic shifts in c-TF-IDF emphasis between IP and VR participants.</p>
+            <div class="card-actions">
+              <a href="followup/comparison_ip_vs_vr/topics_per_class_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/comparison_ip_vs_vr/topics_per_class_barchart.html', 'Follow-up Topics-per-Class Drill-down')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up Combined Topics Barchart -->
+        <div class="viz-card" data-category="followup" data-tags="followup combined topic barchart keywords descriptors next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Combined Cohort</span>
+            </div>
+            <img src="followup/combined/topic_barchart.png" alt="Follow-up Combined Topic Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up Combined Topic Keywords</h3>
+            <p class="card-desc">Top c-TF-IDF keywords describing retrospective cognitive processing, performance appraisal, and memory consolidation themes.</p>
+            <div class="card-actions">
+              <a href="followup/combined/topic_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/combined/topic_barchart.html', 'Follow-up Combined Topic Keywords')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up Combined Distance Map -->
+        <div class="viz-card" data-category="followup" data-tags="followup combined distance map umap projection semantic clusters next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Distance Map</span>
+            </div>
+            <img src="followup/combined/topic_distance_map.png" alt="Follow-up Combined Distance Map" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up Intertopic Distance Map</h3>
+            <p class="card-desc">UMAP projection of next-day follow-up reflection topics, illustrating the semantic organization of memory recall.</p>
+            <div class="card-actions">
+              <a href="followup/combined/topic_distance_map.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/combined/topic_distance_map.html', 'Follow-up Intertopic Distance Map')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up Combined Topic Heatmap -->
+        <div class="viz-card" data-category="followup" data-tags="followup combined similarity heatmap cosine matrix next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge" style="background: rgba(255,255,255,0.15); color: #fff;">Heatmap</span>
+            </div>
+            <img src="followup/combined/topic_heatmap.png" alt="Follow-up Combined Topic Heatmap" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up Topic Similarity Heatmap</h3>
+            <p class="card-desc">Cosine similarity matrix across next-day themes, capturing overlap between performance rumination and memory recall.</p>
+            <div class="card-actions">
+              <a href="followup/combined/topic_heatmap.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/combined/topic_heatmap.html', 'Follow-up Topic Similarity Heatmap')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up IP Specific Model -->
+        <div class="viz-card" data-category="followup" data-tags="followup ip in-person model barchart human next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan);">IP Arm Only</span>
+            </div>
+            <img src="followup/IP/topic_barchart.png" alt="Follow-up IP Topic Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up In-Person (IP) Arm Model</h3>
+            <p class="card-desc">Independent model exploring how In-Person participants ruminated or moved on from real human evaluators 24 hours later.</p>
+            <div class="card-actions">
+              <a href="followup/IP/topic_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/IP/topic_barchart.html', 'Follow-up In-Person (IP) Arm Model')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow-up VR Specific Model -->
+        <div class="viz-card" data-category="followup" data-tags="followup vr virtual reality model barchart avatars next-day">
+          <div class="viz-preview-wrap">
+            <div class="card-badge-strip">
+              <span class="badge badge-followup">Follow-up</span>
+              <span class="badge" style="background: rgba(251, 146, 60, 0.2); color: var(--accent-orange);">VR Arm Only</span>
+            </div>
+            <img src="followup/VR/topic_barchart.png" alt="Follow-up VR Topic Barchart" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Follow-up Virtual Reality (VR) Arm Model</h3>
+            <p class="card-desc">Independent model exploring next-day thoughts regarding simulated VR avatar judgment and technology impressions.</p>
+            <div class="card-actions">
+              <a href="followup/VR/topic_barchart.html" target="_blank" class="btn btn-primary">Open Interactive</a>
+              <button onclick="openModal('followup/VR/topic_barchart.html', 'Follow-up Virtual Reality (VR) Arm Model')" class="btn btn-secondary">Preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SECTION 4: DATA HUB & RESEARCH EXPORT FILES                           -->
+    <!-- ===================================================================== -->
+    <div class="section-group" data-suite="data">
+      <div class="section-header" id="suite-data">
+        <div>
+          <h2 class="section-title">
+            <span style="color: var(--accent-orange);">&bull;</span> Tabular Reports &amp; Research Datasets
+          </h2>
+          <p class="section-desc">Download clean CSV tables generated by the pipeline for statistical analysis in R, SPSS, or Stata.</p>
+        </div>
+        <span class="count-tag">10 CSV Datasets</span>
+      </div>
+
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Dataset / Report</th>
+              <th>Pipeline Suite</th>
+              <th>Description &amp; Key Variables</th>
+              <th>Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>paired_participant_comparison.csv</strong></td>
+              <td><span class="badge badge-paired">Paired</span></td>
+              <td>Complete row-per-participant table ($N=145$) with text, cosine similarity, topic shifts, word deltas, and psycholinguistic marker counts.</td>
+              <td><a href="paired_comparison/paired_participant_comparison.csv" class="csv-link" download>&darr; CSV (128 KB)</a></td>
+            </tr>
+            <tr>
+              <td><strong>paired_cohort_summary.csv</strong></td>
+              <td><span class="badge badge-paired">Paired</span></td>
+              <td>Statistical summary comparing Overall, IP, and VR on mean similarity, topic retention, length change, and marker deltas.</td>
+              <td><a href="paired_comparison/paired_cohort_summary.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>receding_vs_emerging_terms.csv</strong></td>
+              <td><span class="badge badge-paired">Paired</span></td>
+              <td>Relative word occurrence rates per 1,000 words comparing Lab vs Follow-up with rate differences.</td>
+              <td><a href="paired_comparison/receding_vs_emerging_terms.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>topic_transition_matrix.csv</strong></td>
+              <td><span class="badge badge-paired">Paired</span></td>
+              <td>Contingency crosstab matrix mapping participant volume from each Lab topic to each Next-Day topic.</td>
+              <td><a href="paired_comparison/topic_transition_matrix.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>lab/comparison_ip_vs_vr/topics_per_class.csv</strong></td>
+              <td><span class="badge badge-lab">Immediate Lab</span></td>
+              <td>Cross-condition comparative table of topic frequencies and c-TF-IDF representative words for IP vs VR.</td>
+              <td><a href="lab/comparison_ip_vs_vr/topics_per_class.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>lab/combined/document_topics.csv</strong></td>
+              <td><span class="badge badge-lab">Immediate Lab</span></td>
+              <td>Individual participant topic assignments, probabilities, and full response text for immediate reflections.</td>
+              <td><a href="lab/combined/document_topics.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>lab/combined/topic_info.csv</strong></td>
+              <td><span class="badge badge-lab">Immediate Lab</span></td>
+              <td>Topic metadata summary: Topic ID, frequency, labels, KeyBERT descriptors, and top representative documents.</td>
+              <td><a href="lab/combined/topic_info.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>followup/comparison_ip_vs_vr/topics_per_class.csv</strong></td>
+              <td><span class="badge badge-followup">Follow-up</span></td>
+              <td>Cross-condition comparative table of topic frequencies and c-TF-IDF keywords for next-day reflections.</td>
+              <td><a href="followup/comparison_ip_vs_vr/topics_per_class.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>followup/combined/document_topics.csv</strong></td>
+              <td><span class="badge badge-followup">Follow-up</span></td>
+              <td>Individual participant topic assignments, probabilities, and full response text for follow-up reflections.</td>
+              <td><a href="followup/combined/document_topics.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+            <tr>
+              <td><strong>followup/combined/topic_info.csv</strong></td>
+              <td><span class="badge badge-followup">Follow-up</span></td>
+              <td>Next-day topic summary metadata table with KeyBERT representations and cluster counts.</td>
+              <td><a href="followup/combined/topic_info.csv" class="csv-link" download>&darr; CSV</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>FOCUS Study qualitative NLP pipeline &bull; Built with BERTopic, SentenceTransformers, UMAP, Scikit-learn, and Plotly &bull; Data preserved in <code>data/</code></p>
+    </footer>
+  </div>
+
+  <!-- Interactive Lightbox Modal -->
+  <div class="modal-overlay" id="previewModal" onclick="handleBackdropClick(event)">
+    <div class="modal-window">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Visualization Preview</span>
+        <div class="modal-controls">
+          <a href="#" id="modalExternalLink" target="_blank" class="modal-btn">Open in New Tab &nearr;</a>
+          <button onclick="closeModal()" class="modal-btn">&times; Close</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <iframe id="modalIframe" src="about:blank"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal controls
+    function openModal(url, title) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalExternalLink').href = url;
+      document.getElementById('modalIframe').src = url;
+      document.getElementById('previewModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('previewModal').classList.remove('open');
+      document.getElementById('modalIframe').src = 'about:blank';
+      document.body.style.overflow = 'auto';
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target.id === 'previewModal') {
+        closeModal();
+      }
+    }
+
+    // Filter controls
+    function filterCategory(cat, btn) {
+      // Update active pill
+      document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.viz-card, .flagship-card');
+      const groups = document.querySelectorAll('.section-group');
+
+      if (cat === 'all') {
+        cards.forEach(c => c.style.display = 'flex');
+        groups.forEach(g => g.style.display = 'block');
+        return;
+      }
+
+      // Filter by category
+      cards.forEach(card => {
+        const categories = (card.getAttribute('data-category') || '').split(' ');
+        if (categories.includes(cat) || (cat === 'paired' && card.classList.contains('flagship-card'))) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show/hide sections based on active category
+      groups.forEach(group => {
+        const suite = group.getAttribute('data-suite');
+        if (cat === 'all' || suite === cat || (cat === 'cross' && (suite === 'lab' || suite === 'followup' || suite === 'paired'))) {
+          group.style.display = 'block';
+        } else {
+          group.style.display = 'none';
+        }
+      });
+    }
+
+    // Search filter
+    function handleSearch() {
+      const q = document.getElementById('searchViz').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.viz-card, .flagship-card');
+
+      cards.forEach(card => {
+        const text = (card.innerText + ' ' + (card.getAttribute('data-tags') || '')).toLowerCase();
+        if (!q || text.includes(q)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Keyboard ESC to close modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>

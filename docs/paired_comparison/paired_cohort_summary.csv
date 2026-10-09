@@ -1,0 +1,4 @@
+Cohort,Participant_Count,Mean_Similarity,Median_Similarity,Std_Similarity,Topic_Retention_Rate,Mean_Lab_Words,Mean_Followup_Words,Mean_Delta_Words,Mean_Lexical_Overlap,Mean_Delta_Somatic,Mean_Delta_Evaluator,Mean_Delta_Evaluative
+Overall,145,0.4754,0.4763,0.1686,12.4%,70.9,67.9,-3.0,0.0463,-0.35,-0.5,0.4
+In-Person (IP),59,0.4948,0.5187,0.1844,6.8%,82.8,90.9,8.2,0.0494,-0.36,-0.24,0.41
+Virtual Reality (VR),86,0.4621,0.4604,0.1565,16.3%,62.8,52.0,-10.7,0.0442,-0.35,-0.67,0.4
